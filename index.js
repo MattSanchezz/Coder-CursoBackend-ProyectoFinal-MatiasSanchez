@@ -47,20 +47,20 @@ class ProductManager {
         return product;
     }
     updateProduct(idProduct, updatedData) {
-        const productIndex = this.products.findIndex((product) => product.id === idProduct);
-        if (productIndex === -1) {
+        const product = this.products.findIndex((product) => product.id === idProduct);
+        if (product === -1) {
             return 'Producto no encontrado';
         }
-        const updatedProduct = { ...this.prducts[productIndex], ...updatedData };
-        this.products[productIndex] = updatedProduct;
+        const updatedProduct = { ...this.products[product], ...updatedData };
+        this.products[product] = updatedProduct;
         return updatedProduct;
     }
     deleteProduct(idProduct) {
-        const productIndex = this.products.findIndex((product) => product.id === idProduct);
-        if (productIndex === -1) {
+        const product = this.products.findIndex((product) => product.id === idProduct);
+        if (product === -1) {
             return 'Producto no encontrado';
         }
-        this.products.splice(productIndex, 1);
+        this.products.splice(product, 1);
         return 'Producto eliminado';
     }
     saveToFile(filename) {
