@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 class ProductManager {
     constructor(filename) {
@@ -97,4 +97,5 @@ console.log(product1.getProductsById(1));
 console.log(product1.getProductsById(100));
 console.log(product1.updateProduct(1, { price: 30000, stock: 25 }));
 console.log(product1.deleteProduct(1));
-productManager.saveToFile('productos.json');
+product1.saveToFile('productos.json');
+export default ProductManager;

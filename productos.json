@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 2,
+    "title": "Camiseta",
+    "description": "Camiseta titular del equipo Independiente",
+    "price": 25000,
+    "thumbnail": "Imagen not found",
+    "code": "IND00012313",
+    "stock": 30
+  }
+]
