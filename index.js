@@ -101,29 +101,19 @@ class CartManager {
   }
 
   getCartById(cartId) {
-    const cart = this.carts.find((c) => c.id === cartId);
+    const carts = this.getAllCarts()
+    console.log(carts)
+    const cart = carts.find((c) => c.id === cartId);
     return cart || null;
   }
 
   addToCart(cartId, productId, quantity) {
-    const cart = this.getCartById(cartId);
+    const carts = this.getAllCarts();
+    let newCart = {id: cartId, productId: productId}
+    newCart.id = carts.length ? carts[carts.length - 1].id + 1 : 1;
 
-    if (!cart) {
-      return 'Carrito no encontrado';
-    }
+    carts.push(newCart);
 
-    const product = ProductManager.getProductsById(productId);
-
-    if (!product) {
-      return 'Producto no encontrado';
-    }
-
-    const cartProduct = {
-      product,
-      quantity,
-    };
-
-    cart.products.push(cartProduct);
     this.saveToFile(this.filename);
 
     return 'Producto agregado al carrito con éxito';
@@ -171,4 +161,4 @@ class CartManager {
 const productManager = new ProductManager('productos.json');
 const cartManager = new CartManager('carrito.json');
 
-export { productManager, CartManager };
+export { productManager, cartManager };
