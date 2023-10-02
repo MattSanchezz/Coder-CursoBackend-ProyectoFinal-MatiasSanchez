@@ -1,16 +1,18 @@
 import express from 'express';
 import http from 'http';
+import { dirname } from "path";
 import { Server as SocketIOServer } from 'socket.io';
-import exphbs from 'express-handlebars';
-import { productManager, CartManager } from './index.js';
+import handlebars from "express-handlebars";
+import { productManager, cartManager } from './index.js';
 
 const app = express();
+const __dirname = dirname(import.meta.url);
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-app.engine('handlebars', exphbs());
+app.engine("handlebars", handlebars.engine());
 app.set('view engine', 'handlebars');
-app.set('views', 'views');
+app.set("views", __dirname + "/views");
 
 app.use(express.json());
 
@@ -96,7 +98,7 @@ app.post('/carts/:cid/product/:pid', (req, res) => {
   const productId = req.params.pid;
   const quantity = 1;
 
-  const result = CartManager.addToCart(cartId, productId, quantity);
+  const result = cartManager.addToCart(cartId, productId, quantity);
 
   if (result === 'Carrito no encontrado') {
     res.status(404).json({ message: 'Carrito no encontrado' });
@@ -109,7 +111,7 @@ app.post('/carts/:cid/product/:pid', (req, res) => {
 
 app.get('/home', (req, res) => {
   const products = productManager.getProducts();
-  res.render('views/home', { products });
+  res.render('home', { products });
 });
 
 app.get('/realtimeproducts', (req, res) => {
@@ -132,7 +134,7 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = 4000;
+const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`Servidor Express en funcionamiento en el puerto ${PORT}`);
 })
