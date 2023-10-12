@@ -1,0 +1,92 @@
+[
+    {
+        "id": 1,
+        "title": "Camiseta",
+        "description": "Camiseta titular del Club Atletico Independiente",
+        "price": 10000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod123",
+        "stock": 15
+      },
+      {
+        "id": 2,
+        "title": "Pantalon",
+        "description": "Pantalon tipo joggings del Club Atletico Independiente",
+        "price": 20000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod234",
+        "stock": 25
+      },
+      {
+        "id": 3,
+        "title": "Campera",
+        "description": "Campera impermeable del Club Atletico Independiente",
+        "price": 15000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod345",
+        "stock": 35
+      },
+      {
+        "id": 4,
+        "title": "Short",
+        "description": "Short titular del Club Atletico Independiente",
+        "price": 4000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod456",
+        "stock": 45
+      },
+      {
+        "id": 5,
+        "title": "Camiseta suplente",
+        "description": "Camiseta alternativa del Club Atletico Independiente",
+        "price": 8000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod567",
+        "stock": 55
+      },
+      {
+        "id": 6,
+        "title": "Buzo",
+        "description": "Buzo de invierno con capucha del Club Atletico Independiente",
+        "price": 30000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod678",
+        "stock": 65
+      },
+      {
+        "id": 7,
+        "title": "Chanclas",
+        "description": "Descripción genérica",
+        "price": 7000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod789",
+        "stock": 75
+      },
+      {
+        "id": 8,
+        "title": "Pelota",
+        "description": "Descripción genérica",
+        "price": 5000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod890",
+        "stock": 85
+      },
+      {
+        "id": 9,
+        "title": "Riñonera",
+        "description": "Descripción genérica",
+        "price": 900,
+        "thumbnail": "Sin imagen",
+        "code": "Cod901",
+        "stock": 95
+      },
+      {
+        "id": 10,
+        "title": "Mochila",
+        "description": "Descripción genérica",
+        "price": 10000,
+        "thumbnail": "Sin imagen",
+        "code": "Cod012",
+        "stock": 105
+      }
+]
