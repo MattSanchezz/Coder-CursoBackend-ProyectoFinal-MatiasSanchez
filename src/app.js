@@ -4,6 +4,7 @@ import apiRouter from "./routes/api.router.js";
 import viewsRouter from "./routes/views.router.js";
 import __dirname from "./utils.js";
 import { initializeSocket } from "./socket/socketServer.js";
+import "./db/configDB.js";
 
 const app = express();
 const PORT = 8080;

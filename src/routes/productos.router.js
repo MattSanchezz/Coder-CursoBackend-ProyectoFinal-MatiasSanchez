@@ -1,5 +1,5 @@
 import { Router } from "express";
-import productManager from "../services/ProductManager.js";
+import productManager from "../services/ProductsManager.js";
 import { uploader } from "../utils.js";
 
 const productosRouter = Router();

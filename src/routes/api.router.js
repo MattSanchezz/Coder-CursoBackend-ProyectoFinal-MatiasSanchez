@@ -1,6 +1,6 @@
 import express from "express";
 import cartsRouter from "./carritos.router.js";
-import productsRouter from "./produtos.router.js";
+import productsRouter from "./productos.router.js";
 
 const apiRouter = express.Router();
 
