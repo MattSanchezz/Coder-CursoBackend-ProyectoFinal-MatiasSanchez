@@ -1,4 +1,5 @@
 import fs from "fs";
+import { productsModel } from "./modelos/products.model";
 
 class ProductManager {
     constructor(path){
@@ -91,6 +92,17 @@ class ProductManager {
         } else {
             return false;
         }
+    }
+    async findAllProducts(obj) {
+        console.log("obj", obj);
+        const {limit=10, page=1, sort, ...queryfilter} = obj;
+        const response = await productsModel.paginate(queryfilter, {
+            limit,
+            page,
+            sort: { price: sortPrice === "asc" ? 1 : -1 },
+            lean: true,
+        });
+        return response;
     }
 }
 

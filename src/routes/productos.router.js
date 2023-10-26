@@ -1,6 +1,6 @@
 import { Router } from "express";
-import productManager from "../services/ProductsManager.js";
 import { uploader } from "../utils.js";
+import ProductsManager from "../dao/ProductsManagerMongo.js";
 
 const productosRouter = Router();
 
@@ -107,6 +107,11 @@ productosRouter.delete("/:pid", async (req, res) => {
             data: {}
         });
     };
+});
+
+productosRouter.get("/", async (req, res) => {
+    const products = await ProductsManager.findAllProducts (req.query);
+    res.json({ products });
 });
 
 export default productosRouter;

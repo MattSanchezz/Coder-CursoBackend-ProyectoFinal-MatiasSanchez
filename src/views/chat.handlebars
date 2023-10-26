@@ -9,7 +9,6 @@
     <h1>Chat</h1>
     <div id="chat-container">
         <div id="chat-messages">
-            <!-- Aquí se mostrarán los mensajes -->
         </div>
         <input type="text" id="message-input" placeholder="Escribe un mensaje">
         <button id="send-button">Enviar</button>
@@ -27,12 +26,11 @@
             }
             
             sendButton.addEventListener("click", () => {
-                const usuario = "correoDelUsuario"; // Reemplaza por el usuario actual
+                const usuario = "correoDelUsuario";
                 const mensaje = messageInput.value;
                 if (usuario && mensaje) {
-                    addMessageToChat(usuario, mensaje); // Agrega el mensaje localmente
-                    messageInput.value = ""; // Borra el campo de entrada
-                    // Luego, envía el mensaje al servidor
+                    addMessageToChat(usuario, mensaje);
+                    messageInput.value = ""; 
                     fetch("/enviar-mensaje", {
                         method: "POST",
                         headers: {

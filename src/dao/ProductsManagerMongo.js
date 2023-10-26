@@ -60,6 +60,17 @@ class ProductManagerMongo {
       throw new Error("Error al eliminar el producto: " + error.message);
     }
   }
+  async findAllProducts(obj) {
+    console.log("obj", obj);
+    const {limit=10, page=1, sort, ...queryfilter} = obj;
+    const response = await productsModel.paginate(queryfilter, {
+        limit,
+        page,
+        sort: { price: sortPrice === "asc" ? 1 : -1 },
+        lean: true,
+    });
+    return response;
+  }
 }
 
 export default new ProductManagerMongo();
