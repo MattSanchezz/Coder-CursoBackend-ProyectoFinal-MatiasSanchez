@@ -1,4 +1,5 @@
 import express from "express";
+import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
 import apiRouter from "./routes/api.router.js";
 import viewsRouter from "./routes/views.router.js";
@@ -6,13 +7,30 @@ import __dirname from "./utils.js";
 import { initializeSocket } from "./socket/socketServer.js";
 import "./db/configDB.js";
 import ChatManager from "./dao/ChatManager.js";
+import MongoStore from "connect-mongo";
+import session from "express-session";
 
 const app = express();
-const PORT = 4000;
+const PORT = 8080;
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+
+const URI =
+    "mongodb+srv://matsanchez01:Mmm333ole@mattcluster.xdkwueb.mongodb.net/dbProyectoMatt?retryWrites=true&w=majority";
+app.use(
+  session({
+    secret: "SESSIONSECRETKEY",
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
+    store: new MongoStore({
+      mongoUrl: URI,
+    }),
+  })
+);
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Example app listening on port http://localhost:${PORT}`)
