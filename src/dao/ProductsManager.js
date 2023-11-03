@@ -1,5 +1,5 @@
 import fs from "fs";
-import { productsModel } from "./modelos/products.model";
+import { productsModel } from "../dao/modelos/products.model";
 
 class ProductManager {
     constructor(path){

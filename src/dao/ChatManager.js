@@ -1,4 +1,4 @@
-import { messagesModel } from "./modelos/messages.model";
+import { messagesModel } from "../dao/modelos/message.model";
 
 class ChatManager {
   async guardarMensaje(usuario, mensaje) {

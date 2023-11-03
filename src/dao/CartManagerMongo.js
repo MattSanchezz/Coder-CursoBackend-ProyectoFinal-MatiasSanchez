@@ -1,5 +1,5 @@
-import { cartModel } from "./modelos/carts.model";
-import { productsModel } from "./modelos/products.model";
+import { cartModel } from "../dao/modelos/carts.model";
+import { productsModel } from "../dao/modelos/products.model";
 
 class CartManagerMongo {
   async createCart(idCart) {
