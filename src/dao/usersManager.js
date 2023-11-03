@@ -1,4 +1,4 @@
-import { usersModel } from "../dao/modelos/users.model";
+import { usersModel } from "../dao/modelos/users.model.js";
 
 class UsersManager {
   async findById(id) {

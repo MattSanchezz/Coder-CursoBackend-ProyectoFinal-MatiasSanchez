@@ -1,4 +1,4 @@
-import {productsModel} from "../dao/modelos/products.model";
+import {productsModel} from "../dao/modelos/products.model.js";
 
 class ProductManagerMongo {
   async addProduct(newProduct) {
