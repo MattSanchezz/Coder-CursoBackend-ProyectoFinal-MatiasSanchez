@@ -18,6 +18,17 @@ const usersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  age: {
+    type: Number,
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Carts",
+  },
+  role: {
+    type: String,
+    default: 'user',
+  },
 });
 
 export const usersModel = mongoose.model("Users", usersSchema);

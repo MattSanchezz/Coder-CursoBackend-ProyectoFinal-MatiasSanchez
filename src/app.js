@@ -9,6 +9,9 @@ import "./db/configDB.js";
 import ChatManager from "./dao/ChatManager.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import passport from "passport";
+import "./passport.js"
+
 
 const app = express();
 const PORT = 8080;
@@ -31,6 +34,38 @@ app.use(
     }),
   })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post(
+  "/login",
+  passport.authenticate("login", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
+
+app.post(
+  "/signup",
+  passport.authenticate("signup", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/signup",
+    failureFlash: true,
+  })
+);
+
+app.get("/dashboard", isLoggedIn, (req, res) => {
+  res.render("dashboard", { user: req.user });
+});
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
 
 const httpServer = app.listen(PORT, () => {
     console.log(`Example app listening on port http://localhost:${PORT}`)
