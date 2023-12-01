@@ -1,14 +1,16 @@
+import "dotenv/config.js"
 import express from "express";
+import session from "express-session";
+import MongoStore from "connect-mongo";
 import cookieParser from "cookie-parser";
 import handlebars from "express-handlebars";
 import apiRouter from "./routes/api.router.js";
 import viewsRouter from "./routes/views.router.js";
+import errorHandlerMiddleware from "./middleware/errorHandlerMiddle.js";
 import __dirname from "./utils.js";
 import { initializeSocket } from "./socket/socketServer.js";
 import "./db/configDB.js";
 import ChatManager from "./dao/ChatManager.js";
-import MongoStore from "connect-mongo";
-import session from "express-session";
 import passport from "passport";
 import "./passport.js"
 
@@ -67,6 +69,8 @@ function isLoggedIn(req, res, next) {
   res.redirect("/login");
 }
 
+app.use (errorHandlerMiddleware);
+
 const httpServer = app.listen(PORT, () => {
     console.log(`Example app listening on port http://localhost:${PORT}`)
 });
@@ -109,3 +113,4 @@ app.get("*", async (req, res) => {
         data: {}
     })
 });
+
