@@ -10,7 +10,7 @@ function isAuthenticated(req, res, next) {
     if (!req.isAuthenticated()) {
       next();
     } else {
-      res.redirect("http://localhost:8080/products");
+      res.redirect("http://localhost:8080/productos");
     }
   }
   

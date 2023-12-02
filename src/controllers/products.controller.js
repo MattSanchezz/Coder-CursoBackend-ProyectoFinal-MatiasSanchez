@@ -1,11 +1,11 @@
-import productManager from "../dao/ProductsManagerMongo.js";
-import cartManager from "../dao/CartManagerMongo.js";
+import ProductManagerMongo from "../dao/ProductsManagerMongo.js";
+import CartManagerMongo from "../dao/CartManagerMongo.js";
 
 async function getProducts(req, res, next) {
   try {
     const { query, limit, page, sort } = req.query;
 
-    const products = await productManager.getProducts(query, limit, page, sort);
+    const products = await ProductManagerMongo.getProducts(query, limit, page, sort);
 
     products.status = products.payload.length > 0 ? "success" : "error";
 
@@ -30,7 +30,7 @@ async function getProductById(req, res, next) {
   try {
     const { pid } = req.params;
 
-    const product = await productManager.getById(pid);
+    const product = await ProductManagerMongo.getById(pid);
 
     if (product) {
       res.status(200).json({ product: product });
@@ -52,7 +52,7 @@ async function addProduct(req, res, next) {
       });
     }
 
-    const result = await productManager.create(newProduct);
+    const result = await ProductManagerMongo.create(newProduct);
 
     res.status(201).json({ message: result });
   } catch (error) {
@@ -70,7 +70,7 @@ async function updateProductById(req, res, next) {
       newProductInfo.thumbnails = req.files.map((file) => file.path);
     }
 
-    const result = await productManager.updateById(pid, newProductInfo);
+    const result = await ProductManagerMongo.updateById(pid, newProductInfo);
 
     res.status(200).json({ message: result });
   } catch (error) {
@@ -82,9 +82,9 @@ async function deleteProductById(req, res, next) {
   try {
     const { pid } = req.params;
 
-    const result = await productManager.deleteById(pid);
+    const result = await ProductManagerMongo.deleteById(pid);
 
-    await cartManager.deleteProductFromCarts(pid);
+    await CartManagerMongo.deleteProductFromCarts(pid);
 
     res.status(200).json({ message: result });
   } catch (error) {
