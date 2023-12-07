@@ -1,14 +1,26 @@
 import { cartModel } from "../dao/modelos/carts.model.js";
 import { productsModel } from "../dao/modelos/products.model.js";
 
+function createCartModel(data) {
+  return new cartModel(data);
+}
+
+function createProductsModel(data) {
+  return new productsModel(data);
+}
+
+class CreateCartDTO {
+  constructor(idCart) {
+    this.idCart = idCart;
+    this.products = [];
+  }
+}
+
 class CartManagerMongo {
   async createCart(idCart) {
     try {
-      const cart = new cartModel({
-        idCart,
-        products: [],
-      });
-
+      const cartDTO = new CreateCartDTO(idCart);
+      const cart = createCartModel(cartDTO);  // Usa la fábrica para crear la instancia del modelo
       const createdCart = await cart.save();
 
       return createdCart;
@@ -128,7 +140,6 @@ class CartManagerMongo {
       throw new Error("Error al eliminar todos los productos del carrito: " + error.message);
     }
   }
-  
 }
 
 export default new CartManagerMongo();

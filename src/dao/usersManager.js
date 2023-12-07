@@ -1,17 +1,23 @@
 import { usersModel } from "../dao/modelos/users.model.js";
 
+function createUserModel(data) {
+  return new usersModel(data);
+}
+
 class UsersManager {
   async findById(id) {
     const response = await usersModel.findById(id);
     return response;
   }
+
   async findByEmail(email) {
     const response = await usersModel.findOne({ email });
     return response;
   }
 
   async createOne(obj) {
-    const response = await usersModel.create(obj);
+    const user = createUserModel(obj);  // Usa la fábrica para crear la instancia del modelo
+    const response = await user.save();
     return response;
   }
 }

@@ -1,9 +1,13 @@
 import {productsModel} from "../dao/modelos/products.model.js";
 
+function createProductModel(data) {
+  return new productsModel(data);
+}
+
 class ProductManagerMongo {
   async addProduct(newProduct) {
     try {
-      const product = new productsModel({
+      const product = createProductModel({
         name: newProduct.name,
         price: newProduct.price,
         stock: newProduct.stock || 0,
@@ -40,7 +44,6 @@ class ProductManagerMongo {
 
   async updateProduct(idProd, updateProduct) {
     try {
-      
       const updatedProduct = await productsModel.findByIdAndUpdate(idProd, updateProduct, {
         new: true,
       }).exec();
@@ -60,14 +63,15 @@ class ProductManagerMongo {
       throw new Error("Error al eliminar el producto: " + error.message);
     }
   }
+
   async findAllProducts(obj) {
     console.log("obj", obj);
-    const {limit=10, page=1, sort, ...queryfilter} = obj;
+    const { limit = 10, page = 1, sort, ...queryfilter } = obj;
     const response = await productsModel.paginate(queryfilter, {
-        limit,
-        page,
-        sort: { price: sortPrice === "asc" ? 1 : -1 },
-        lean: true,
+      limit,
+      page,
+      sort: { price: sortPrice === "asc" ? 1 : -1 },
+      lean: true,
     });
     return response;
   }

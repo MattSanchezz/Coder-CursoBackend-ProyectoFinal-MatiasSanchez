@@ -1,12 +1,15 @@
 import { Router } from "express";
 import cartManager from "../dao/CartManagerMongo.js";
+import { checkUserRole } from "../middleware/authorizationMiddle.js";
+import { generateUniqueCode, addTicket } from "../repositories/ticketsRepository.js";
+import productsManager from "../dao/ProductsManagerMongo.js";
 
 const carritosRouter = Router();
 
-carritosRouter.post("/", async (req, res) => {
+carritosRouter.post("/", checkUserRole("user"), async (req, res) => {
     const newCart = await cartManager.newCart();
 
-    if(newCart) {
+    if (newCart) {
         res.status(200).json({
             status: "success",
             message: "Cart created successfully.",
@@ -52,12 +55,12 @@ carritosRouter.get("/:cid", async (req, res) => {
     }
 });
 
-carritosRouter.post("/:cid/product/:pid", async (req, res) => {
+carritosRouter.post("/:cid/product/:pid", checkUserRole("user"), async (req, res) => {
     const cid = parseInt(req.params.cid);
     const pid = parseInt(req.params.pid);
     const addProductToCart = await cartManager.addProductToCart(cid, pid);
 
-    if(addProductToCart) {
+    if (addProductToCart) {
         res.status(200).json({
             status: "success",
             message: "Product added to cart successfully.",
@@ -72,38 +75,10 @@ carritosRouter.post("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-carritosRouter.delete("/:cid/products/:pid", async (req, res) => {
+// Aplicación del middleware para las siguientes rutas
+carritosRouter.put("/:cid", checkUserRole("user"), async (req, res) => {
     const cid = parseInt(req.params.cid);
-    const pid = parseInt(req.params.pid);
-
-    try {
-        const updatedCart = await cartManager.removeProductFromCart(cid, pid);
-
-        if (updatedCart) {
-            res.status(200).json({
-                status: "success",
-                message: "Product removed from cart successfully.",
-                data: updatedCart
-            });
-        } else {
-            res.status(409).json({
-                status: "error",
-                message: "Cart or product not found.",
-                data: {}
-            });
-        }
-    } catch (error) {
-        res.status(500).json({
-            status: "error",
-            message: "Error removing product from cart.",
-            data: error.message
-        });
-    }
-});
-
-carritosRouter.put("/:cid", async (req, res) => {
-    const cid = parseInt(req.params.cid);
-    const newProducts = req.body.products; 
+    const newProducts = req.body.products;
 
     try {
         const updatedCart = await cartManager.updateCart(cid, newProducts);
@@ -130,7 +105,7 @@ carritosRouter.put("/:cid", async (req, res) => {
     }
 });
 
-carritosRouter.put("/:cid/products/:pid", async (req, res) => {
+carritosRouter.put("/:cid/products/:pid", checkUserRole("user"), async (req, res) => {
     const cid = parseInt(req.params.cid);
     const pid = parseInt(req.params.pid);
     const newQuantity = req.body.quantity;
@@ -160,7 +135,36 @@ carritosRouter.put("/:cid/products/:pid", async (req, res) => {
     }
 });
 
-carritosRouter.delete("/:cid", async (req, res) => {
+carritosRouter.delete("/:cid/products/:pid", checkUserRole("user"), async (req, res) => {
+    const cid = parseInt(req.params.cid);
+    const pid = parseInt(req.params.pid);
+
+    try {
+        const updatedCart = await cartManager.removeProductFromCart(cid, pid);
+
+        if (updatedCart) {
+            res.status(200).json({
+                status: "success",
+                message: "Product removed from cart successfully.",
+                data: updatedCart
+            });
+        } else {
+            res.status(409).json({
+                status: "error",
+                message: "Cart or product not found.",
+                data: {}
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: "error",
+            message: "Error removing product from cart.",
+            data: error.message
+        });
+    }
+});
+
+carritosRouter.delete("/:cid", checkUserRole("user"), async (req, res) => {
     const cid = parseInt(req.params.cid);
 
     try {
@@ -184,6 +188,65 @@ carritosRouter.delete("/:cid", async (req, res) => {
             status: "error",
             message: "Error removing products from the cart.",
             data: error.message
+        });
+    }
+});
+
+carritosRouter.post("/:cid/purchase", async (req, res) => {
+    const cid = parseInt(req.params.cid);
+
+    try {
+        const cart = await cartManager.getCart(cid);
+
+        if (!cart || !cart.products || cart.products.length === 0) {
+            return res.status(400).json({
+                status: "error",
+                message: "El carrito está vacío. No se puede realizar la compra.",
+                data: {},
+            });
+        }
+
+        for (const product of cart.products) {
+            const productId = product.productId;
+            const quantity = product.quantity;
+
+            const productInStock = await productsManager.getProductById(productId); // Cambia aquí
+
+            if (productInStock.stock >= quantity) {
+                productInStock.stock -= quantity;
+
+                await productsManager.updateProduct(productId, productInStock); // Cambia aquí
+            } else {
+                return res.status(400).json({
+                    status: "error",
+                    message: `No hay suficiente stock para el producto con ID ${productId}. La compra ha sido cancelada.`,
+                    data: {},
+                });
+            }
+        }
+
+        const ticket = {
+            code: generateUniqueCode(),
+            purchase_datetime: new Date(),
+            amount: cart.total,
+            purchaser: req.user.email,
+        };
+
+        const savedTicket = await addTicket(ticket); // Cambia aquí
+
+        await cartManager.deleteAllProductsInCart(cid);
+
+        return res.status(200).json({
+            status: "success",
+            message: "Compra realizada con éxito.",
+            data: savedTicket,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: "error",
+            message: "Error al procesar la compra.",
+            data: error.message,
         });
     }
 });
