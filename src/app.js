@@ -68,7 +68,6 @@ function isLoggedIn(req, res, next) {
   }
   res.redirect("/login");
 }
-
 app.use (errorHandlerMiddleware);
 
 const httpServer = app.listen(PORT, () => {

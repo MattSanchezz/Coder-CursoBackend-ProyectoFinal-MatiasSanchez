@@ -75,7 +75,6 @@ carritosRouter.post("/:cid/product/:pid", checkUserRole("user"), async (req, res
     }
 });
 
-// Aplicación del middleware para las siguientes rutas
 carritosRouter.put("/:cid", checkUserRole("user"), async (req, res) => {
     const cid = parseInt(req.params.cid);
     const newProducts = req.body.products;
@@ -206,23 +205,34 @@ carritosRouter.post("/:cid/purchase", async (req, res) => {
             });
         }
 
+        const productsNotProcessed = []; // Nuevo arreglo para almacenar los ID de productos no procesados
+
         for (const product of cart.products) {
             const productId = product.productId;
             const quantity = product.quantity;
 
-            const productInStock = await productsManager.getProductById(productId); // Cambia aquí
+            const productInStock = await productsManager.getProductById(productId);
 
             if (productInStock.stock >= quantity) {
                 productInStock.stock -= quantity;
 
-                await productsManager.updateProduct(productId, productInStock); // Cambia aquí
+                await productsManager.updateProduct(productId, productInStock);
             } else {
-                return res.status(400).json({
-                    status: "error",
-                    message: `No hay suficiente stock para el producto con ID ${productId}. La compra ha sido cancelada.`,
-                    data: {},
-                });
+                // Agregar el ID del producto al arreglo si no se puede procesar
+                productsNotProcessed.push(productId);
+
+                // No interrumpir el bucle, continúa con el siguiente producto
+                continue;
             }
+        }
+
+        if (productsNotProcessed.length > 0) {
+            // Hay productos que no se pudieron procesar
+            return res.status(400).json({
+                status: "error",
+                message: "Algunos productos no tienen suficiente stock para completar la compra.",
+                data: { productsNotProcessed },
+            });
         }
 
         const ticket = {
@@ -232,7 +242,7 @@ carritosRouter.post("/:cid/purchase", async (req, res) => {
             purchaser: req.user.email,
         };
 
-        const savedTicket = await addTicket(ticket); // Cambia aquí
+        const savedTicket = await addTicket(ticket);
 
         await cartManager.deleteAllProductsInCart(cid);
 

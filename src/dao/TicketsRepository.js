@@ -4,7 +4,7 @@ function generateUniqueCode() {
     const uniqueCode = Math.random().toString(36).substring(2, 10).toUpperCase();
     return uniqueCode;
 }
-
+//
 async function addTicket(ticketData) {
     try {
         const ticket = new Ticket({

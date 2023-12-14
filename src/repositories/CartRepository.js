@@ -20,7 +20,6 @@ class CartRepository {
       throw new Error(`Error al agregar un producto al carrito: ${error.message}`);
     }
   }
-
   async updateCart(idCart, cartData) {
     try {
       const updatedCart = await this.cartManager.updateCart(idCart, cartData);

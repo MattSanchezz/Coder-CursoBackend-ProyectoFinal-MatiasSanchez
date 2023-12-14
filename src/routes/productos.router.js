@@ -109,7 +109,7 @@ productosRouter.delete("/:pid", checkUserRole('admin'), async (req, res) => {
     });
   }
 });
-
+//
 productosRouter.get("/", async (req, res) => {
   const products = await ProductsManager.findAllProducts(req.query);
   res.json({ products });

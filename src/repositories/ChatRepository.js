@@ -11,7 +11,6 @@ class ChatRepository {
         throw new Error(`Error al guardar el mensaje: ${error.message}`);
       }
     }
-  
   }
   
   export default ChatRepository;

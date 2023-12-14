@@ -17,5 +17,4 @@ function createDAOManager(daoType) {
       throw new Error("Tipo de DAO no válido");
   }
 }
-
 export default createDAOManager;
