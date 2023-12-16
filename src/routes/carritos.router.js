@@ -3,6 +3,7 @@ import cartManager from "../dao/CartManagerMongo.js";
 import { checkUserRole } from "../middleware/authorizationMiddle.js";
 import { generateUniqueCode, addTicket } from "../repositories/ticketsRepository.js";
 import productsManager from "../dao/ProductsManagerMongo.js";
+import errorHandler from "../factories/errorHandler.module.js";
 
 const carritosRouter = Router();
 
@@ -193,72 +194,79 @@ carritosRouter.delete("/:cid", checkUserRole("user"), async (req, res) => {
 
 carritosRouter.post("/:cid/purchase", async (req, res) => {
     const cid = parseInt(req.params.cid);
-
+  
     try {
-        const cart = await cartManager.getCart(cid);
-
-        if (!cart || !cart.products || cart.products.length === 0) {
-            return res.status(400).json({
-                status: "error",
-                message: "El carrito está vacío. No se puede realizar la compra.",
-                data: {},
-            });
-        }
-
-        const productsNotProcessed = []; // Nuevo arreglo para almacenar los ID de productos no procesados
-
-        for (const product of cart.products) {
-            const productId = product.productId;
-            const quantity = product.quantity;
-
-            const productInStock = await productsManager.getProductById(productId);
-
-            if (productInStock.stock >= quantity) {
-                productInStock.stock -= quantity;
-
-                await productsManager.updateProduct(productId, productInStock);
-            } else {
-                // Agregar el ID del producto al arreglo si no se puede procesar
-                productsNotProcessed.push(productId);
-
-                // No interrumpir el bucle, continúa con el siguiente producto
-                continue;
-            }
-        }
-
-        if (productsNotProcessed.length > 0) {
-            // Hay productos que no se pudieron procesar
-            return res.status(400).json({
-                status: "error",
-                message: "Algunos productos no tienen suficiente stock para completar la compra.",
-                data: { productsNotProcessed },
-            });
-        }
-
-        const ticket = {
-            code: generateUniqueCode(),
-            purchase_datetime: new Date(),
-            amount: cart.total,
-            purchaser: req.user.email,
-        };
-
-        const savedTicket = await addTicket(ticket);
-
-        await cartManager.deleteAllProductsInCart(cid);
-
-        return res.status(200).json({
-            status: "success",
-            message: "Compra realizada con éxito.",
-            data: savedTicket,
+      const cart = await cartManager.getCart(cid);
+  
+      if (!cart || !cart.products || cart.products.length === 0) {
+        return res.status(400).json({
+          status: "error",
+          message: "El carrito está vacío. No se puede realizar la compra.",
+          data: {},
         });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
+      }
+  
+      const productsNotProcessed = [];
+  
+      for (const product of cart.products) {
+        const productId = product.productId;
+        const quantity = product.quantity;
+  
+        const productInStock = await productsManager.getProductById(productId);
+  
+        if (!productInStock) {
+          const error = errorHandler("PRODUCT_NOT_FOUND");
+          return res.status(404).json({
             status: "error",
-            message: "Error al procesar la compra.",
-            data: error.message,
+            message: error.message,
+            data: { productId },
+          });
+        }
+  
+        if (productInStock.stock >= quantity) {
+          productInStock.stock -= quantity;
+  
+          await productsManager.updateProduct(productId, productInStock);
+        } else {
+          productsNotProcessed.push(productId);
+          continue;
+        }
+      }
+  
+      if (productsNotProcessed.length > 0) {
+        const error = errorHandler("INSUFFICIENT_STOCK");
+        return res.status(400).json({
+          status: "error",
+          message: error.message,
+          data: { productsNotProcessed },
         });
+      }
+  
+      const ticket = {
+        code: generateUniqueCode(),
+        purchase_datetime: new Date(),
+        amount: cart.total,
+        purchaser: req.user.email,
+      };
+  
+      const savedTicket = await addTicket(ticket);
+  
+      await cartManager.deleteAllProductsInCart(cid);
+  
+      return res.status(200).json({
+        status: "success",
+        message: "Compra realizada con éxito.",
+        data: savedTicket,
+      });
+    } catch (error) {
+      const customError = errorHandler("UNKNOWN_ERROR");
+      console.error(customError.message);
+      return res.status(500).json({
+        status: "error",
+        message: customError.message,
+        data: {},
+      });
     }
-});
+  });
 
 export default carritosRouter;
