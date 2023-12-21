@@ -13,6 +13,7 @@ import "./db/configDB.js";
 import ChatManager from "./dao/ChatManager.js";
 import passport from "passport";
 import "./passport.js"
+import loggerTestRouter from "./routes/logger.router.js";
 
 
 const app = express();
@@ -105,6 +106,7 @@ app.post("/enviar-mensaje", async (req, res) => {
 
 app.use("/api", apiRouter);
 app.use("/", viewsRouter);
+app.use('/loggerTest', loggerTestRouter);
 app.get("*", async (req, res) => {
     return res.status(404).json({
         status: "error",

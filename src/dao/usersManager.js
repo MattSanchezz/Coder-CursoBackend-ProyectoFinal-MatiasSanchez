@@ -16,7 +16,7 @@ class UsersManager {
   }
 
   async createOne(obj) {
-    const user = createUserModel(obj);  // Usa la fábrica para crear la instancia del modelo
+    const user = createUserModel(obj); 
     const response = await user.save();
     return response;
   }

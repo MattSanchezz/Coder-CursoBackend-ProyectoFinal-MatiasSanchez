@@ -4,6 +4,7 @@ import { checkUserRole } from "../middleware/authorizationMiddle.js";
 import { generateUniqueCode, addTicket } from "../repositories/ticketsRepository.js";
 import productsManager from "../dao/ProductsManagerMongo.js";
 import errorHandler from "../factories/errorHandler.module.js";
+import { log, logLevels } from '../logger.js';
 
 const carritosRouter = Router();
 
@@ -260,7 +261,7 @@ carritosRouter.post("/:cid/purchase", async (req, res) => {
       });
     } catch (error) {
       const customError = errorHandler("UNKNOWN_ERROR");
-      console.error(customError.message);
+      log(logLevels.ERROR, customError.message);
       return res.status(500).json({
         status: "error",
         message: customError.message,

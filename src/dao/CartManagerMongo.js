@@ -20,7 +20,7 @@ class CartManagerMongo {
   async createCart(idCart) {
     try {
       const cartDTO = new CreateCartDTO(idCart);
-      const cart = createCartModel(cartDTO);  // Usa la fábrica para crear la instancia del modelo
+      const cart = createCartModel(cartDTO);
       const createdCart = await cart.save();
 
       return createdCart;

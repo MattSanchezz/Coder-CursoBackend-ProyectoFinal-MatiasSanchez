@@ -2,6 +2,7 @@ import { Router } from "express";
 import UserDTO from "../dto/user.dto.js";
 import { usersManager } from "../managers/usersManager.js";
 import passport from "passport";
+import { log } from "../logger.js";
 
 const UserRouter = Router();
 
@@ -23,15 +24,13 @@ UserRouter.get(
 
 UserRouter.get("/current", async (req, res) => {
   try {
-    // Obtener la información del usuario desde la sesión o cualquier otro método que utilices
     const currentUser = req.session.user;
 
-    // Crear un DTO y enviar solo la información necesaria al cliente
     const userDTO = new UserDTO(currentUser);
 
     res.json(userDTO);
   } catch (error) {
-    console.error(error);
+    log('ERROR', error.message);
     res.status(500).json({ error: 'Error al obtener la información del usuario' });
   }
 });

@@ -33,14 +33,16 @@ passport.use(
             userId: userCreated._id,
           });
 
-          console.log("user from Passport: ", userCreated)
+          log('INFO', 'Usuario creado exitosamente desde Passport');
+          log('DEBUG', `user from Passport: ${userCreated}`);
 
           return done(null, userCreated);
         } else {
-          console.log("user from Passport found: ", foundUser)
+          log('DEBUG', `user from Passport found: ${foundUser}`);
           return done(null, foundUser);
         }
       } catch (error) {
+        log('ERROR', `Error durante la creación o búsqueda de usuario desde Passport: ${error.message}`);
         return done(error);
       }
     }

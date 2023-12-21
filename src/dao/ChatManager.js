@@ -15,7 +15,7 @@ class ChatManager {
   async guardarMensaje(usuario, mensaje) {
     try {
       const messageDTO = new MessageDTO(usuario, mensaje);
-      const nuevoMensaje = createMessageModel(messageDTO);  // Usa la fábrica para crear la instancia del modelo
+      const nuevoMensaje = createMessageModel(messageDTO); 
       const mensajeGuardado = await nuevoMensaje.save();
 
       return mensajeGuardado;
