@@ -1,4 +1,4 @@
-import Ticket from "../models/tickets.model.js";
+import Ticket from "../dao/modelos/tickets.model.js";
 
 function generateUniqueCode() {
     const uniqueCode = Math.random().toString(36).substring(2, 10).toUpperCase();

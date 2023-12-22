@@ -1,7 +1,7 @@
 import { Router } from "express";
 import cartManager from "../dao/CartManagerMongo.js";
 import { checkUserRole } from "../middleware/authorizationMiddle.js";
-import { generateUniqueCode, addTicket } from "../repositories/ticketsRepository.js";
+import { generateUniqueCode, addTicket } from "../repositories/TicketsRepository.js";
 import productsManager from "../dao/ProductsManagerMongo.js";
 import errorHandler from "../factories/errorHandler.module.js";
 import { log, logLevels } from '../logger.js';

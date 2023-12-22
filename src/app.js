@@ -13,11 +13,14 @@ import "./db/configDB.js";
 import ChatManager from "./dao/ChatManager.js";
 import passport from "passport";
 import "./passport.js"
+import { initializeFactories } from "./factories/DAOFactory.js";
 import loggerTestRouter from "./routes/logger.router.js";
 
 
 const app = express();
 const PORT = 8080;
+
+initializeFactories(app);
 
 app.use(cookieParser());
 app.use(express.json());
