@@ -32,4 +32,22 @@ async function updateCurrentUser(req, res, next){
   }
 }
 
-export { deleteUser, updateCurrentUser };
+async function createPremiumUser(req, res, next) {
+  try {
+    const newUser = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      password: req.body.password,
+      role: 'premium',
+    };
+
+    const createdUser = await usersManager.createOne(newUser);
+
+    res.status(201).json(createdUser);
+  } catch (error) {
+    next(error);
+  }
+}
+
+export { deleteUser, updateCurrentUser, createPremiumUser };

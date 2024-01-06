@@ -15,6 +15,7 @@ import passport from "passport";
 import "./passport.js"
 import { initializeFactories } from "./factories/DAOFactory.js";
 import loggerTestRouter from "./routes/logger.router.js";
+import { isLoggedIn } from './middleware/authorizationMiddle.js';
 
 
 const app = express();

@@ -20,6 +20,10 @@ class UsersManager {
     const response = await user.save();
     return response;
   }
+  async updateById(id, data) {
+    const response = await usersModel.findByIdAndUpdate(id, data, { new: true });
+    return response;
+  }
 }
 
 export const usersManager = new UsersManager();
