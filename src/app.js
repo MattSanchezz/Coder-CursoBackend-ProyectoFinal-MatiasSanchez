@@ -16,6 +16,7 @@ import "./passport.js"
 import { initializeFactories } from "./factories/DAOFactory.js";
 import loggerTestRouter from "./routes/logger.router.js";
 import { isLoggedIn } from './middleware/authorizationMiddle.js';
+import resetRouter from './routes/resetPassword.router.js';
 
 
 const app = express();
@@ -108,6 +109,7 @@ app.post("/enviar-mensaje", async (req, res) => {
     }
 });
 
+app.use('/reset-password', resetRouter);
 app.use("/api", apiRouter);
 app.use("/", viewsRouter);
 app.use('/loggerTest', loggerTestRouter);

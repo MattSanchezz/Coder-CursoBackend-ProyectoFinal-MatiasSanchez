@@ -102,6 +102,25 @@ async function getCartOfActiveUser(req, res, next) {
   }
 }
 
+async function addToCart(req, res, next) {
+  try {
+    const userId = req.user._id;
+    const productId = req.body.productId;
+
+    const existingCartItem = await CartManagerMongo.getCartItem(userId, productId);
+
+    if (existingCartItem) {
+      if (req.user.role === 'premium' && existingCartItem.owner.toString() === userId.toString()) {
+        return res.status(400).json({ message: "No puedes agregar tu propio producto al carrito." });
+      }
+    }
+
+    res.status(200).json({ message: "Producto agregado al carrito correctamente." });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export {
   addProductToCartById,
   createCart,
@@ -111,4 +130,5 @@ export {
   updateProductOfCartById,
   updateProductsOfCart,
   getCartOfActiveUser,
+  addToCart,
 };

@@ -44,7 +44,11 @@ async function getProductById(req, res, next) {
 
 async function addProduct(req, res, next) {
   try {
-    let newProduct = { ...req.body, thumbnails: [] };
+    if (req.user.role !== 'premium') {
+      return res.status(403).json({ error: 'Only premium users can create products' });
+    }
+
+    const newProduct = { ...req.body, owner: req.user.email, thumbnails: [] };
 
     if (req.files) {
       req.files.forEach((file, index) => {
@@ -64,6 +68,13 @@ async function updateProductById(req, res, next) {
   try {
     const { pid } = req.params;
 
+    const isAdmin = req.user.role === 'admin';
+    const product = await ProductManagerMongo.getById(pid);
+
+    if (!isAdmin && product.owner !== req.user.email) {
+      return res.status(403).json({ error: 'No tienes permiso para actualizar este producto' });
+    }
+
     let newProductInfo = { ...req.body, thumbnails: [] };
 
     if (req.files) {
@@ -81,6 +92,13 @@ async function updateProductById(req, res, next) {
 async function deleteProductById(req, res, next) {
   try {
     const { pid } = req.params;
+
+    const isAdmin = req.user.role === 'admin';
+    const product = await ProductManagerMongo.getById(pid);
+
+    if (!isAdmin && product.owner !== req.user.email) {
+      return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
+    }
 
     const result = await ProductManagerMongo.deleteById(pid);
 

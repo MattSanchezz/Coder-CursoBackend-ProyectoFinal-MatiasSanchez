@@ -132,13 +132,27 @@ class CartManagerMongo {
         throw new Error("Carrito no encontrado.");
       }
 
-      cart.products = []; // Elimina todos los productos del carrito
+      cart.products = [];
 
       const updatedCart = await cart.save();
       return updatedCart;
     } catch (error) {
       throw new Error("Error al eliminar todos los productos del carrito: " + error.message);
     }
+  }
+
+  async getCartItem(userId, productId) {
+    const response = await cartModel.findOne({
+      owner: userId,
+      'products.product': productId,
+    });
+
+    if (response) {
+      const cartItem = response.items.find(item => item.productId.toString() === productId.toString());
+      return cartItem;
+    }
+
+    return null;
   }
 }
 

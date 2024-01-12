@@ -10,7 +10,7 @@ resetRouter.get('/reset-password', async (req, res) => {
     const { valid, userId } = await verificarTokenResetPassword(token);
 
     if (valid) {
-      res.render('reset-password-form', { userId, token });
+      res.render('reset-password', { userId, token });
     } else {
       res.redirect('/generate-new-link');
     }
@@ -24,7 +24,7 @@ resetRouter.get('/generate-new-link', async (req, res) => {
   try {
     const userId = req.user.id;
     const nuevoEnlace = await generarNuevoEnlace(userId);
-    res.redirect(`/reset-password?token=${nuevoEnlace.token}`);
+    res.render('generate-new-link', { nuevoEnlace });
   } catch (error) {
     console.error('Error al generar nuevo enlace:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
