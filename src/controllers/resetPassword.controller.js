@@ -1,9 +1,24 @@
 import ResetPassword from '../dao/modelos/resetPassword.model.js';
+import { verificarTokenResetPassword } from '../services/resetPasswordService.js';
 
-const resetInfo = new ResetPassword({
-  userId: usuario._id,
-  token: tokenGenerado,
-  expiration: new Date(Date.now() + 3600000),
-});
+async function renderResetPasswordPage(req, res) {
+  res.render('reset-password');
+}
 
-await resetInfo.save();
+async function handleResetPasswordRequest(req, res) {
+  const { token, newPassword } = req.body;
+
+  const { valid, userId } = await verificarTokenResetPassword(token);
+
+  if (!valid) {
+    return res.render('reset-password', { error: 'El token no es válido.' });
+  }
+
+  await updateUserPassword(userId, newPassword);
+
+  await ResetPassword.deleteOne({ userId });
+
+  res.render('reset-password', { success: 'Contraseña restablecida con éxito.' });
+}
+
+export { renderResetPasswordPage, handleResetPasswordRequest };

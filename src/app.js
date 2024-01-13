@@ -17,6 +17,8 @@ import { initializeFactories } from "./factories/DAOFactory.js";
 import loggerTestRouter from "./routes/logger.router.js";
 import { isLoggedIn } from './middleware/authorizationMiddle.js';
 import resetRouter from './routes/resetPassword.router.js';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 
 const app = express();
@@ -45,6 +47,22 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API de Mi Proyecto',
+      version: '1.0.0',
+      description: 'Documentación de la API de Mi Proyecto',
+    },
+  },
+  apis: ['routes/productos.router.js', 'routes/carritos.router.js'],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.post(
   "/login",

@@ -3,6 +3,7 @@ import UserDTO from "../dto/user.dto.js";
 import { usersManager } from "../managers/usersManager.js";
 import passport from "passport";
 import { log } from "../logger.js";
+import { cambiarRolUsuario } from '../controllers/user.controller.js';
 
 const UserRouter = Router();
 
@@ -66,5 +67,7 @@ UserRouter.get('/logout', (req, res) => {
     req.redirect("/");
   });
 });
+
+UserRouter.put('/premium/:uid', cambiarRolUsuario);
 
 export default UserRouter;

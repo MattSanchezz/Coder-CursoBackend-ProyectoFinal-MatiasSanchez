@@ -50,4 +50,30 @@ async function createPremiumUser(req, res, next) {
   }
 }
 
-export { deleteUser, updateCurrentUser, createPremiumUser };
+async function cambiarRolUsuario(req, res, next) {
+  try {
+    const { uid } = req.params;
+    const { nuevoRol } = req.body;
+    if (nuevoRol !== 'user' && nuevoRol !== 'premium') {
+      return res.status(400).json({ error: 'Rol inválido' });
+    }
+
+    const usuario = await usersManager.findById(uid);
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    usuario.role = nuevoRol;
+
+    await usuario.save();
+
+    log('INFO', `Rol de usuario ${usuario.email} cambiado a ${nuevoRol}`);
+
+    res.status(200).json({ message: 'Rol de usuario actualizado con éxito' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export { deleteUser, updateCurrentUser, createPremiumUser, cambiarRolUsuario };
