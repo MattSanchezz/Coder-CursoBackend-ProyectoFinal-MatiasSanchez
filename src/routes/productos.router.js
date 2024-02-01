@@ -2,6 +2,8 @@ import { Router } from "express";
 import { uploader } from "../utils.js";
 import ProductsManager from "../dao/ProductsManagerMongo.js";
 import { checkUserRole } from '../middleware/authorizationMiddle.js';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
 
 const productosRouter = Router();
 
@@ -260,5 +262,11 @@ productosRouter.delete("/:pid", checkUserRole('admin'), async (req, res) => {
     });
   }
 });
+
+productosRouter.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerJsdoc(options))
+);
 
 export default productosRouter;

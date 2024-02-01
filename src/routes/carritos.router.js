@@ -1,9 +1,11 @@
-import { Router } from "express";
-import cartManager from "../dao/CartManagerMongo.js";
-import { checkUserRole } from "../middleware/authorizationMiddle.js";
-import { generateUniqueCode, addTicket } from "../repositories/TicketsRepository.js";
-import productsManager from "../dao/ProductsManagerMongo.js";
-import errorHandler from "../factories/errorHandler.module.js";
+import { Router } from 'express';
+import swaggerJsdoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import cartManager from '../dao/CartManagerMongo.js';
+import { checkUserRole } from '../middleware/authorizationMiddle.js';
+import { generateUniqueCode, addTicket } from '../repositories/TicketsRepository.js';
+import productsManager from '../dao/ProductsManagerMongo.js';
+import errorHandler from '../factories/errorHandler.module.js';
 import { log, logLevels } from '../logger.js';
 
 const carritosRouter = Router();
@@ -532,5 +534,11 @@ carritosRouter.post("/:cid/purchase", async (req, res) => {
       });
     }
   });
+
+  carritosRouter.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerJsdoc(options))
+  );
 
 export default carritosRouter;

@@ -1,0 +1,43 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API de Mi Proyecto",
+      "version": "1.0.0",
+      "description": "Documentación de la API de Mi Proyecto"
+    },
+    "paths": {
+      "/api-docs": {
+        "get": {
+          "summary": "Swagger UI",
+          "description": "Endpoint para acceder a la interfaz Swagger UI.",
+          "responses": {
+            "200": {
+              "description": "Interfaz Swagger UI",
+              "content": {
+                "text/html": {
+                  "example": "<!DOCTYPE html>..."
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api-docs/json": {
+        "get": {
+          "summary": "Swagger JSON",
+          "description": "Endpoint para obtener la definición Swagger en formato JSON.",
+          "responses": {
+            "200": {
+              "description": "Definición Swagger en formato JSON",
+              "content": {
+                "application/json": {
+                  "example": { }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
