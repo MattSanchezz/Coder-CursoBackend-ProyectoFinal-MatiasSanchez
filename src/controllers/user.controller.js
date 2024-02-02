@@ -54,6 +54,7 @@ async function cambiarRolUsuario(req, res, next) {
   try {
     const { uid } = req.params;
     const { nuevoRol } = req.body;
+
     if (nuevoRol !== 'user' && nuevoRol !== 'premium') {
       return res.status(400).json({ error: 'Rol inválido' });
     }
@@ -64,8 +65,11 @@ async function cambiarRolUsuario(req, res, next) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    usuario.role = nuevoRol;
+    if (nuevoRol === 'premium' && !usuario.documentsUploaded) {
+      return res.status(403).json({ error: 'Debes cargar los documentos requeridos para ser premium' });
+    }
 
+    usuario.role = nuevoRol;
     await usuario.save();
 
     log('INFO', `Rol de usuario ${usuario.email} cambiado a ${nuevoRol}`);

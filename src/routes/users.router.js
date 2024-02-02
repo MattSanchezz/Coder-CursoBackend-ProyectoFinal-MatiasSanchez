@@ -4,6 +4,7 @@ import { usersManager } from "../managers/usersManager.js";
 import passport from "passport";
 import { log } from "../logger.js";
 import { cambiarRolUsuario } from '../controllers/user.controller.js';
+import { documentController } from "../controllers/document.controller.js";
 
 const UserRouter = Router();
 
@@ -35,6 +36,8 @@ UserRouter.get("/current", async (req, res) => {
     res.status(500).json({ error: 'Error al obtener la información del usuario' });
   }
 });
+
+UserRouter.put('/:uid', cambiarRolUsuario);
 
 UserRouter.get("/:idUser", async (req, res) => {
   const { idUser } = req.params;
@@ -68,6 +71,22 @@ UserRouter.get('/logout', (req, res) => {
   });
 });
 
-UserRouter.put('/premium/:uid', cambiarRolUsuario);
+UserRouter.post("/:uid/documents", async (req, res) => {
+  const { uid } = req.params;
+
+  try {
+    const result = await documentController.uploadDocument(uid, req.file);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al cargar el documento.' });
+  }
+});
+
+UserRouter.post("/:uid/documents", checkUserRole('premium'), uploadDocument, uploadDocuments);
+
+UserRouter.post("/:uid/profile-image", checkUserRole('user', 'premium'), uploaderProfile.single("profileImage"), uploadProfileImage);
+
+UserRouter.post("/:uid/product-image", checkUserRole('admin'), uploaderProduct.single("productImage"), uploadProductImage);
 
 export default UserRouter;
