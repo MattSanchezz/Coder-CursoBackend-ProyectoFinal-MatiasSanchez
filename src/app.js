@@ -14,11 +14,9 @@ import passport from 'passport';
 import './passport.js';
 import { initializeFactories } from './factories/DAOFactory.js';
 import loggerTestRouter from './routes/logger.router.js';
-import { isLoggedIn } from './middleware/authorizationMiddle.js';
 import resetRouter from './routes/resetPassword.router.js';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { enviarMensaje } from './controllers/chat.controller.js';
 
 const app = express();
 const PORT = 8080;
@@ -62,28 +60,6 @@ const swaggerSpec = swaggerJSDoc(options);
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.post(
-  '/login',
-  passport.authenticate('login', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/login',
-    failureFlash: true,
-  })
-);
-
-app.post(
-  '/signup',
-  passport.authenticate('signup', {
-    successRedirect: '/dashboard',
-    failureRedirect: '/signup',
-    failureFlash: true,
-  })
-);
-
-app.get('/dashboard', isLoggedIn, (req, res) => {
-  res.render('dashboard', { user: req.user });
-});
-
 app.use(errorHandlerMiddleware);
 
 const httpServer = app.listen(PORT, () => {
@@ -95,13 +71,6 @@ initializeSocket(httpServer);
 app.engine('handlebars', handlebars.engine());
 app.set('views', __dirname + '/views');
 app.set('view engine', 'handlebars');
-
-app.get('/chat', (req, res) => {
-  res.render('chat');
-});
-
-app.post('/enviar-mensaje', enviarMensaje);
-
 app.use('/reset-password', resetRouter);
 app.use('/api', apiRouter);
 app.use('/', viewsRouter);

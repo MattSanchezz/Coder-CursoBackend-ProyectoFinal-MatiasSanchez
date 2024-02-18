@@ -1,5 +1,6 @@
 import { Router } from "express";
 import productManager from "../dao/ProductsManagerMongo.js";
+import { enviarMensaje } from '../controllers/chat.controller.js';
 
 const viewsRouter = Router();
 
@@ -43,6 +44,8 @@ viewsRouter.get("/carts/:cid", async (req, res) => {
 viewsRouter.get("/chat", (req, res) => {
     res.render("chat");
 });
+
+viewsRouter.post("/enviar-mensaje", enviarMensaje);
 
 viewsRouter.get("/", (req, res) => {
     res.render("login");

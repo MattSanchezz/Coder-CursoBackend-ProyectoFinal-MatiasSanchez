@@ -1,11 +1,12 @@
 import ResetPassword from '../dao/modelos/resetPassword.model.js';
 import { verificarTokenResetPassword } from '../services/resetPasswordService.js';
+import { updateUserPassword } from '../services/resetPassword.services.js';
 
-async function renderResetPasswordPage(req, res) {
+export async function renderResetPasswordPage(req, res) {
   res.render('reset-password');
 }
 
-async function handleResetPasswordRequest(req, res) {
+export async function handleResetPasswordRequest(req, res) {
   const { token, newPassword } = req.body;
 
   const { valid, userId } = await verificarTokenResetPassword(token);
@@ -14,11 +15,14 @@ async function handleResetPasswordRequest(req, res) {
     return res.render('reset-password', { error: 'El token no es válido.' });
   }
 
-  await updateUserPassword(userId, newPassword);
+  try {
+    await updateUserPassword(userId, newPassword);
 
-  await ResetPassword.deleteOne({ userId });
+    await ResetPassword.deleteOne({ userId });
 
-  res.render('reset-password', { success: 'Contraseña restablecida con éxito.' });
+    res.render('reset-password', { success: 'Contraseña restablecida con éxito.' });
+  } catch (error) {
+    console.error('Error al manejar la solicitud de restablecimiento de contraseña:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 }
-
-export { renderResetPasswordPage, handleResetPasswordRequest };
