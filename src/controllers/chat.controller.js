@@ -19,7 +19,12 @@ export const enviarMensaje = async (req, res) => {
   }
 };
 
-export const renderChatPage = (req, res) => {
-  // Lógica para renderizar la página de chat
-  res.render('chat');
+export const renderChatPage = async (req, res) => {
+  try {
+      const mensajes = await ChatManager.getMensajesRecientes();
+      res.render('chat', { mensajes });
+  } catch (error) {
+      console.error('Error al renderizar la página de chat:', error);
+      res.status(500).json({ error: 'Error interno del servidor al renderizar la página de chat' });
+  }
 };

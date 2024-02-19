@@ -24,7 +24,7 @@ class DocumentController {
     }
   }
 }
-async function uploadDocuments(req, res, next) {
+async function uploadDocument(req, res, next) {
     try {
       const userId = req.params.uid;
       const user = await usersManager.findById(userId);
