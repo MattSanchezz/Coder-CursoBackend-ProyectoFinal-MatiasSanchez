@@ -3,7 +3,7 @@ import UserDTO from "../dto/user.dto.js";
 import { usersManager } from "../managers/usersManager.js";
 import passport from "passport";
 import { log } from "../logger.js";
-import { cambiarRolUsuario } from '../controllers/user.controller.js';
+import { cambiarRolUsuario, getUsers, deleteInactiveUsers } from '../controllers/user.controller.js';
 import { documentController } from "../controllers/document.controller.js";
 
 const UserRouter = Router();
@@ -88,5 +88,9 @@ UserRouter.post("/:uid/documents", checkUserRole('premium'), uploadDocument, upl
 UserRouter.post("/:uid/profile-image", checkUserRole('user', 'premium'), uploaderProfile.single("profileImage"), uploadProfileImage);
 
 UserRouter.post("/:uid/product-image", checkUserRole('admin'), uploaderProduct.single("productImage"), uploadProductImage);
+
+UserRouter.get('/', getUsers);
+
+UserRouter.delete('/', deleteInactiveUsers);
 
 export default UserRouter;

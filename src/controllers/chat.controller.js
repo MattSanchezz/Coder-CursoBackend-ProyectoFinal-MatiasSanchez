@@ -18,3 +18,8 @@ export const enviarMensaje = async (req, res) => {
     });
   }
 };
+
+export const renderChatPage = (req, res) => {
+  // Lógica para renderizar la página de chat
+  res.render('chat');
+};

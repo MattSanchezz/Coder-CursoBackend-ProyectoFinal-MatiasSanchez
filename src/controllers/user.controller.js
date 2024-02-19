@@ -1,5 +1,8 @@
 import usersManager from "../dao/usersManager.js";
 import CartManagerMongo from "../dao/CartManagerMongo.js";
+import UserModel from '../dao/modelos/users.model.js';
+import { sendInactiveUserEmail } from '../services/email.service.js';
+import moment from 'moment';
 
 async function deleteUser(req, res, next) {
   try {
@@ -79,5 +82,32 @@ async function cambiarRolUsuario(req, res, next) {
     next(error);
   }
 }
+const getUsers = async (req, res) => {
+  try {
+      const users = await UserModel.find({}, { name: 1, email: 1, role: 1 });
 
-export { deleteUser, updateCurrentUser, createPremiumUser, cambiarRolUsuario };
+      if (!users || users.length === 0) {
+          return res.status(404).json({ message: 'No se encontraron usuarios.' });
+      }
+
+      res.status(200).json(users);
+  } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+const deleteInactiveUsers = async (req, res) => {
+  try {
+      const twoDaysAgo = moment().subtract(2, 'days').toDate();
+
+      const result = await UserModel.deleteMany({ lastConnection: { $lt: twoDaysAgo } });
+
+      result.deletedCount && sendInactiveUserEmail();
+      res.status(200).json({ message: 'Usuarios inactivos eliminados con éxito.' });
+  } catch (error) {
+      console.error('Error al eliminar usuarios inactivos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+export { deleteUser, updateCurrentUser, createPremiumUser, cambiarRolUsuario, getUsers, deleteInactiveUsers };

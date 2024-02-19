@@ -1,4 +1,5 @@
-import CartManagerMongo from "../dao/CartManagerMongo";
+import CartManagerMongo from "../dao/CartManagerMongo.js";
+import { CartModel } from "../dao/modelos/carts.model.js";
 
 async function addProductToCartById(req, res, next) {
   try {
@@ -120,6 +121,24 @@ async function addToCart(req, res, next) {
     next(error);
   }
 }
+export const loadCart = async (req, res, next) => {
+  const { cid } = req.params;
+  try {
+      const cart = await CartModel.findOne({ idCart: cid }).populate('products').exec();
+      if (!cart) {
+          return res.status(404).json({ status: 'error', message: 'Carrito no encontrado.' });
+      }
+      req.cart = cart;
+      next();
+  } catch (error) {
+      res.status(500).json({ status: 'error', message: 'Error al cargar el carrito y sus productos.', data: error.message });
+  }
+};
+
+export const renderCartPage = (req, res) => {
+  const { cart } = req;
+  res.render('cart', { cart });
+};
 
 export {
   addProductToCartById,
@@ -131,4 +150,6 @@ export {
   updateProductsOfCart,
   getCartOfActiveUser,
   addToCart,
+  loadCart,
+  renderCartPage,
 };

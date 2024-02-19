@@ -23,6 +23,14 @@ class ChatManager {
       throw new Error("Error al guardar el mensaje: " + error.message);
     }
   }
+  async getMensajesRecientes() {
+    try {
+      const mensajes = await messagesModel.find().sort({ createdAt: -1 }).limit(10);
+      return mensajes;
+    } catch (error) {
+      throw new Error("Error al obtener los mensajes recientes: " + error.message);
+    }
+  }
 }
 
 export default new ChatManager();
