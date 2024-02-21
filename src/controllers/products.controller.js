@@ -1,5 +1,6 @@
 import ProductManagerMongo from "../dao/ProductsManagerMongo.js";
 import CartManagerMongo from "../dao/CartManagerMongo.js";
+import { sendUserPremiumEmail } from "../services/email.service.js";
 
 async function getProducts(req, res, next) {
   try {
@@ -91,22 +92,26 @@ async function updateProductById(req, res, next) {
 
 async function deleteProductById(req, res, next) {
   try {
-    const { pid } = req.params;
+      const { pid } = req.params;
 
-    const isAdmin = req.user.role === 'admin';
-    const product = await ProductManagerMongo.getById(pid);
+      const isAdmin = req.user.role === 'admin';
+      const product = await ProductManagerMongo.getById(pid);
 
-    if (!isAdmin && product.owner !== req.user.email) {
-      return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
-    }
+      if (!isAdmin && product.owner !== req.user.email) {
+          return res.status(403).json({ error: 'No tienes permiso para eliminar este producto' });
+      }
 
-    const result = await ProductManagerMongo.deleteById(pid);
+      const result = await ProductManagerMongo.deleteById(pid);
 
-    await CartManagerMongo.deleteProductFromCarts(pid);
+      await CartManagerMongo.deleteProductFromCarts(pid);
 
-    res.status(200).json({ message: result });
+      if (product.ownerRole === 'premium') {
+          await sendUserPremiumEmail(product.ownerEmail, 'Producto eliminado', 'Tu producto ha sido eliminado');
+      }
+
+      res.status(200).json({ message: result });
   } catch (error) {
-    next(error);
+      next(error);
   }
 }
 
