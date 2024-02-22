@@ -1,6 +1,6 @@
-import winston from 'winston';
-import fs from 'fs';
-import path from 'path';
+const winston = require('winston');
+const fs = require('fs');
+const path = require('path');
 
 const logLevels = {
   DEBUG: 'debug',
@@ -44,6 +44,4 @@ function log(level, message) {
   logger.log(level, message);
 }
 
-export { log, logLevels };
-
-
+module.exports = { log, logLevels };

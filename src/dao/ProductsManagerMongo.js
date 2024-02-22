@@ -1,4 +1,4 @@
-import {productsModel} from "../dao/modelos/products.model.js";
+import productsModel from "../dao/modelos/products.model.js";
 
 function createProductModel(data) {
   return new productsModel(data);

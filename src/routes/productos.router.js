@@ -7,6 +7,23 @@ import swaggerUi from 'swagger-ui-express';
 
 const productosRouter = Router();
 
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API de Productos",
+      version: "1.0.0",
+      description: "Una descripción de tu API de productos",
+    },
+    servers: [
+      {
+        url: "http://localhost:8080",
+      },
+    ],
+  },
+  apis: ["./src/routes/productos.router.js"],
+}
+
 /**
  * @swagger
  * tags:
@@ -135,7 +152,7 @@ productosRouter.get("/:pid", async (req, res) => {
  *           description: Producto ya existe o información incompleta.
  */
 
-productosRouter.post("/", checkUserRole('admin'), uploader.single("thumbnail"), async (req, res) => {
+productosRouter.post("/", checkUserRole('admin'), uploader("uploads").single("thumbnail"), async (req, res) => {
   const newProduct = req.body;
   if (req.file) {
     newProduct.thumbnail = req.file.path;

@@ -1,4 +1,3 @@
-
 import ResetPassword from '../dao/modelos/resetPassword.model.js';
 
 export const generarNuevoEnlace = async (userId) => {
@@ -38,6 +37,26 @@ export const verificarTokenResetPassword = async (token) => {
     }
   } catch (error) {
     console.error('Error verificando token de restablecimiento de contraseña:', error);
+    throw error;
+  }
+};
+
+export const updateUserPassword = async (userId, newPassword) => {
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('Usuario no encontrado');
+    }
+
+    user.password = newPassword;
+    await user.save();
+
+    await ResetPassword.deleteMany({ userId });
+
+    return true;
+  } catch (error) {
+    console.error('Error al actualizar la contraseña del usuario:', error);
     throw error;
   }
 };

@@ -1,4 +1,6 @@
-import { log } from '../logger.js';
+import logger from '../logger.cjs';
+
+const {log} = logger;
 
 export const debugLog = (req, res) => {
   log('DEBUG', 'Este es un mensaje de debug para /loggerTest/debug');

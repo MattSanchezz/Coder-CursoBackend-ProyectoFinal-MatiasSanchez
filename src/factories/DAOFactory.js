@@ -1,8 +1,9 @@
 import CartManagerMongo from "../dao/CartManagerMongo.js";
 import ProductsManagerMongo from "../dao/ProductsManagerMongo.js";
-import UsersManager from "../dao/usersManager.js";
+import { usersManager } from "../dao/usersManager.js";
 import ChatManager from "../dao/ChatManager.js";
 import { generateMockProducts } from "./mocking.module.js";
+import app from "../app.js";
 
 function createDAOManager(daoType) {
   switch (daoType) {
@@ -11,7 +12,7 @@ function createDAOManager(daoType) {
     case "products":
       return ProductsManagerMongo;
     case "users":
-      return UsersManager;
+      return usersManager;
     case "chat":
       return ChatManager;
     default:
@@ -19,7 +20,7 @@ function createDAOManager(daoType) {
   }
 }
 
-const initializeFactories = () => {
+const initializeFactories = (app) => {
 
   app.get('/mockingproducts', (req, res) => {
       const mockProducts = generateMockProducts();

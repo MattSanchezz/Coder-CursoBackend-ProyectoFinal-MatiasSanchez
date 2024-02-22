@@ -1,5 +1,5 @@
 import CartManagerMongo from "../dao/CartManagerMongo.js";
-import { CartModel } from "../dao/modelos/carts.model.js";
+import { cartModel }from "../dao/modelos/carts.model.js";
 
 async function addProductToCartById(req, res, next) {
   try {
@@ -124,7 +124,7 @@ async function addToCart(req, res, next) {
 export const loadCart = async (req, res, next) => {
   const { cid } = req.params;
   try {
-      const cart = await CartModel.findOne({ idCart: cid }).populate('products').exec();
+      const cart = await cartModel.findOne({ idCart: cid }).populate('products').exec();
       if (!cart) {
           return res.status(404).json({ status: 'error', message: 'Carrito no encontrado.' });
       }
@@ -150,6 +150,4 @@ export {
   updateProductsOfCart,
   getCartOfActiveUser,
   addToCart,
-  loadCart,
-  renderCartPage,
 };

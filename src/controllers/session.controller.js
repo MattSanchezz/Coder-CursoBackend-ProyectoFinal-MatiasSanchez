@@ -1,6 +1,8 @@
 import passport from 'passport';
 import { usersManager } from '../dao/usersManager.js';
-import { log } from '../logger.js';
+import logger from '../logger.cjs';
+
+const { log } = logger;
 
 async function loginUser(req, res) {
   passport.authenticate('login', {

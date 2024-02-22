@@ -1,5 +1,5 @@
 import { cartModel } from "../dao/modelos/carts.model.js";
-import { productsModel } from "../dao/modelos/products.model.js";
+import productsModel  from "../dao/modelos/products.model.js";
 
 function createCartModel(data) {
   return new cartModel(data);

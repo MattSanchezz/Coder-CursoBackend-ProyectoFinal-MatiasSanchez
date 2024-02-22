@@ -6,9 +6,20 @@ import { checkUserRole } from '../middleware/authorizationMiddle.js';
 import { generateUniqueCode, addTicket } from '../repositories/TicketsRepository.js';
 import productsManager from '../dao/ProductsManagerMongo.js';
 import errorHandler from '../factories/errorHandler.module.js';
-import { log, logLevels } from '../logger.js';
+import logger from '../logger.cjs';
 
 const carritosRouter = Router();
+const { log, logLevels} = logger;
+const options = {
+    swaggerDefinition: {
+        info: {
+          title: 'API de Carritos',
+          version: '1.0.0',
+          description: 'Documentación de la API de Carritos',
+        },
+      },
+      apis: ['api/docs/swaggerSpec.json'],
+}
 
 /**
  * @swagger

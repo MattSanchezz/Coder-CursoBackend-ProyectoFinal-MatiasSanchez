@@ -1,5 +1,5 @@
 import ResetPassword from '../dao/modelos/resetPassword.model.js';
-import { verificarTokenResetPassword } from '../services/resetPasswordService.js';
+import { verificarTokenResetPassword } from '../services/resetPassword.services.js';
 import { updateUserPassword } from '../services/resetPassword.services.js';
 
 export async function renderResetPasswordPage(req, res) {

@@ -29,6 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
 const URI = process.env.MONGO_URI;
+console.log('MONGO_URI:', URI);
+
 app.use(
   session({
     secret: 'SESSIONSECRETKEY',
@@ -82,3 +84,5 @@ app.get('*', async (req, res) => {
     data: {},
   });
 });
+
+export default app

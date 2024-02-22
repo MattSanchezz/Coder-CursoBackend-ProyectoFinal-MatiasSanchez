@@ -41,11 +41,11 @@ export const uploaderProfile = multer({ storage: profileStorage });
 
 export const uploaderProduct = multer({ storage: productStorage });
 
-export const uploader = (destinationFolder) => {
+export const uploader = (uploads) => {
     return multer({
       storage: multer.diskStorage({
         destination: function (req, file, cb) {
-          cb(null, `${__dirname}/public/${destinationFolder}`);
+          cb(null, `${__dirname}/public/${uploads}`);
         },
         filename: function (req, file, cb) {
           cb(null, file.originalname);
